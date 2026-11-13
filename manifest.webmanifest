@@ -1,0 +1,37 @@
+{
+  "id": "/resolved/",
+  "name": "Resolved",
+  "short_name": "Resolved",
+  "description": "An original offline office game in simple 3D: you work at a desk in an open office and stamp endless requests with stretchy arms; shout-outs, awards and swag buy the Skill Tree, the team and gear.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/resolved/",
+  "scope": "/resolved/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#131a24",
+  "theme_color": "#131a24",
+  "categories": [
+    "games"
+  ],
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

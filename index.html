@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' file: 'sha256-mL/1B8Ii3ViCS9Ajn+SaYwFH/dPdTcvTLrmRhg73BWU=' 'sha256-IBjjCSpNEzTL7ePjibPcIhoB7hshV65KNkIXnwgUok8='; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'self'; manifest-src 'self' file:">
+  <meta name="theme-color" content="#131a24">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Resolved">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script>(function kkMobileGuard(d, w, n) {
+  // kk-mobile: a touch-first device (the primary pointer is a finger) - the hook for css/mobile.css + js/ui/mobile.js
+  try {
+    var q = function (s) { try { return !!(w.matchMedia && w.matchMedia(s).matches); } catch (e) { return false; } };
+    if (q('(pointer: coarse)') || (!q('(pointer: fine)') && ((n.maxTouchPoints || 0) > 0 || 'ontouchstart' in w))) d.documentElement.classList.add('kk-mobile');
+  } catch (e) { /* never in the way of the game */ }
+})(document, window, navigator);</script>
+  <script>(function kkOfflineCache(w, d, n, l) {
+  // the offline cache (sw.js) is for a web host only: never from file:// or a custom scheme, never in the iOS app shell
+  try {
+    if (!('serviceWorker' in n) || (l.protocol !== 'https:' && l.protocol !== 'http:')) return;
+    if (w.KK_IOS_SHELL || /\bKnuckleKeepApp\//.test(n.userAgent || '') || (w.Capacitor && w.Capacitor.isNativePlatform && w.Capacitor.isNativePlatform())) return;
+    // a new build took over: this page keeps the build it loaded, the next launch runs the new one
+    n.serviceWorker.addEventListener('message', function (e) {
+      var m = e && e.data;
+      if (!m || m.type !== 'kk-update-ready') return;
+      var first = !w.KK_UPDATE_READY;
+      w.KK_UPDATE_READY = { build: String(m.build || '') };
+      if (!first) return;
+      var ev = null;
+      try { ev = new CustomEvent('kk-update-ready', { cancelable: true, detail: w.KK_UPDATE_READY }); } catch (x) { ev = null; }
+      if (ev && !w.dispatchEvent(ev)) return; // a listener that calls preventDefault() shows its own notice
+      var UI = w.KK && w.KK.UI;
+      var G = w.KK && w.KK.Data && w.KK.Data.glossary;
+      var name = (G && G.game && G.game.name) || 'Resolved';
+      if (UI && typeof UI.toast === 'function') UI.toast('Update ready', { type: 'info', sub: 'Close and reopen ' + name + ' to play the new version.', ms: 8000 });
+    });
+    w.addEventListener('load', function () {
+      n.serviceWorker.register('sw.js', { scope: './', updateViaCache: 'none' }).then(function (reg) {
+        // a Home Screen app is brought back, not reloaded: look for a new build then too (at most once an hour)
+        var last = Date.now();
+        d.addEventListener('visibilitychange', function () {
+          if (d.visibilityState !== 'visible' || Date.now() - last < 3600000) return;
+          last = Date.now();
+          reg.update().catch(function () { /* offline: the next launch checks again */ });
+        });
+      }, function (e) { console.warn('[pwa] no offline cache: ' + ((e && e.message) || e)); });
+    });
+  } catch (e) { /* the game never depends on the offline cache */ }
+})(window, document, navigator, location);</script>
+  <title>Resolved</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="game.css">
+  
+</head>
+<body>
+  <div id="app">
+    <canvas id="game"></canvas>
+    <div id="ui-root"></div>
+  </div>
+    <script src="game.js"></script>
+</body>
+</html>
