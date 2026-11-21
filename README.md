@@ -19,10 +19,11 @@ tap **Import**.
 
 It is made for portrait, one thumb. Progress is saved on the device only; Settings > Save > Copy save code and
 Import move it to another device. There is no account and no server: the game never sends anything anywhere.
+Each workplace is its own career with its own code: copy it in each one (Settings > Workplace switches).
 
 ## These files
 
 This repository holds the finished game as static files for GitHub Pages, in one folder; a new release replaces
 all of them. The 3D graphics use [three.js](https://threejs.org) (MIT License, `three.LICENSE.txt`).
 
-Version 1.4.1 (build 41e72f722bfe5136).
+Version 1.5.0 (build a5831cdef8976374).
