@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' file: 'sha256-mL/1B8Ii3ViCS9Ajn+SaYwFH/dPdTcvTLrmRhg73BWU=' 'sha256-IBjjCSpNEzTL7ePjibPcIhoB7hshV65KNkIXnwgUok8='; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'self'; manifest-src 'self' file:">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' file: 'sha256-mL/1B8Ii3ViCS9Ajn+SaYwFH/dPdTcvTLrmRhg73BWU=' 'sha256-hQ1dYxAe6FyBvYzzNfMmsvcz6RMoiy5L47xvkuQAu8M='; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'self'; manifest-src 'self' file:">
   <meta name="theme-color" content="#131a24">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,13 +41,17 @@
     });
     w.addEventListener('load', function () {
       n.serviceWorker.register('sw.js', { scope: './', updateViaCache: 'none' }).then(function (reg) {
-        // a Home Screen app is brought back, not reloaded: look for a new build then too (at most once an hour)
+        // a Home Screen app is brought back, not reloaded: look for a new build each time it comes back to the front -
+        // a tab shown again, a page back from the browser's page cache (1.6.0: it was once an hour, so an open page
+        // could miss a new upload for that long) - at most once a minute
         var last = Date.now();
-        d.addEventListener('visibilitychange', function () {
-          if (d.visibilityState !== 'visible' || Date.now() - last < 3600000) return;
+        var check = function () {
+          if (d.visibilityState !== 'visible' || Date.now() - last < 60000) return;
           last = Date.now();
-          reg.update().catch(function () { /* offline: the next launch checks again */ });
-        });
+          reg.update().catch(function () { /* offline: the next return or launch checks again */ });
+        };
+        d.addEventListener('visibilitychange', check);
+        w.addEventListener('pageshow', function (e) { if (e && e.persisted) check(); });
       }, function (e) { console.warn('[pwa] no offline cache: ' + ((e && e.message) || e)); });
     });
   } catch (e) { /* the game never depends on the offline cache */ }
@@ -58,9 +62,11 @@
   
   
   
+  
 </head>
 <body>
   <div id="app">
+    <div class="kk-splash" role="status"><img class="kk-splash-icon" alt="" width="72" height="72" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='15' fill='%23ff9a1f'/%3E%3Cpath d='M18 33.5l9.5 9.5L46 23' fill='none' stroke='%23fff' stroke-width='7.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"><div class="kk-splash-name">Resolved</div><div class="kk-splash-sub">Loading…</div></div>
     <canvas id="game"></canvas>
     <div id="ui-root"></div>
   </div>

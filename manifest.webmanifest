@@ -8,7 +8,7 @@
   "start_url": "/resolved/",
   "scope": "/resolved/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#131a24",
   "theme_color": "#131a24",
   "categories": [
