@@ -27,4 +27,4 @@ Each workplace is its own career with its own code: copy it in each one (Setting
 This repository holds the finished game as static files for GitHub Pages, in one folder; a new release replaces
 all of them. The 3D graphics use [three.js](https://threejs.org) (MIT License, `three.LICENSE.txt`).
 
-Version 1.6.0 (build f25fc0eefaa6d759).
+Version 1.6.1 (build 5d14559270139e0a).
